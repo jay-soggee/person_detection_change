@@ -251,7 +251,7 @@ TfLiteStatus DecodeAndProcessImage(tflite::ErrorReporter* error_reporter,
       if (min > my_image[i * image_width + j + 1]) min = my_image[i * image_width + j + 1];
       if (min > my_image[(i + 1) * image_width + j]) min = my_image[(i + 1) * image_width + j];
       if (min > my_image[(i + 1) * image_width + j + 1]) min = my_image[(i + 1) * image_width + j + 1];
-      image_data[(i / 2) * 28 + j / 2] = min;
+      image_data[(i / 2) * 28 + j / 2] = min > 50 ? min : -120;
     }
   }
     
