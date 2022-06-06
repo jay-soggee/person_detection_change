@@ -108,8 +108,12 @@ int run_model() {
 
 
 void loop() {
+    /* 
+     * 시리얼 모니터링을 위해 지속적인 GetImage 필요
+     */
+    GetImage(error_reporter, kNumCols, kNumRows, kNumChannels, input->data.int8);
 
-  int predict = run_model();
-  TF_LITE_REPORT_ERROR(error_reporter, "predict as : %d", predict);
+    int predict = run_model();
+    TF_LITE_REPORT_ERROR(error_reporter, "predict as : %d", predict);
 
 }
