@@ -162,6 +162,14 @@ TfLiteStatus DecodeAndProcessImage(tflite::ErrorReporter* error_reporter,
   const int keep_x_mcus = image_width / JpegDec.MCUWidth;
   const int keep_y_mcus = image_height / JpegDec.MCUHeight;
 
+
+
+  image_width = 92;
+  image_height = 92;
+  int8_t my_image[image_width * image_height];
+
+
+
   // Calculate how many MCUs we will throw away on the x axis
   const int skip_x_mcus = JpegDec.MCUSPerRow - keep_x_mcus;
   // Roughly center the crop by skipping half the throwaway MCUs at the
@@ -182,16 +190,16 @@ TfLiteStatus DecodeAndProcessImage(tflite::ErrorReporter* error_reporter,
   // Loop over the MCUs
   while (JpegDec.read()) {
     // Skip over the initial set of rows
-    if (JpegDec.MCUy < skip_start_y_mcus) {
+    if (JpegDec.MCUy < (skip_start_y_mcus)) {
       continue;
     }
     // Skip if we're on a column that we don't want
-    if (JpegDec.MCUx < skip_start_x_mcus ||
-        JpegDec.MCUx >= skip_end_x_mcu_index) {
+    if (JpegDec.MCUx < (skip_start_x_mcus) ||
+        JpegDec.MCUx >= (skip_end_x_mcu_index + 3)) {
       continue;
     }
     // Skip if we've got all the rows we want
-    if (JpegDec.MCUy >= skip_end_y_mcu_index) {
+    if (JpegDec.MCUy >= skip_end_y_mcu_index + 4) {
       continue;
     }
     // Pointer to the current pixel
@@ -229,10 +237,60 @@ TfLiteStatus DecodeAndProcessImage(tflite::ErrorReporter* error_reporter,
         int current_x = x_origin + mcu_col;
         // The index of this pixel in our flat output buffer
         int index = (current_y * image_width) + current_x;
-        image_data[index] = static_cast<int8_t>(gray_value);
+        my_image[index] = static_cast<int8_t>(gray_value);
       }
     }
   }
+
+  
+
+  for (int i = 0; i < 56; i += 2) {
+    int8_t min;
+    for (int j = 0; j < 56; j += 2) {
+      min = my_image[i * image_width + j];
+      if (min > my_image[i * image_width + j + 1]) min = my_image[i * image_width + j + 1];
+      if (min > my_image[(i + 1) * image_width + j]) min = my_image[(i + 1) * image_width + j];
+      if (min > my_image[(i + 1) * image_width + j + 1]) min = my_image[(i + 1) * image_width + j + 1];
+      image_data[(i / 2) * 28 + j / 2] = min;
+    }
+  }
+    
+
+
+  // for(int i = 0; i < 28; i++) {
+  //   TF_LITE_REPORT_ERROR(error_reporter, 
+  //     "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d ;", 
+  //     image_data[i * 28 + 0],
+  //     image_data[i * 28 + 1],
+  //     image_data[i * 28 + 2],
+  //     image_data[i * 28 + 3],
+  //     image_data[i * 28 + 4],
+  //     image_data[i * 28 + 5],
+  //     image_data[i * 28 + 6],
+  //     image_data[i * 28 + 7],
+  //     image_data[i * 28 + 8],
+  //     image_data[i * 28 + 9],
+  //     image_data[i * 28 + 10],
+  //     image_data[i * 28 + 11],
+  //     image_data[i * 28 + 12],
+  //     image_data[i * 28 + 13],
+  //     image_data[i * 28 + 14],
+  //     image_data[i * 28 + 15],
+  //     image_data[i * 28 + 16],
+  //     image_data[i * 28 + 17],
+  //     image_data[i * 28 + 18],
+  //     image_data[i * 28 + 19],
+  //     image_data[i * 28 + 20],
+  //     image_data[i * 28 + 21],
+  //     image_data[i * 28 + 22],
+  //     image_data[i * 28 + 23],
+  //     image_data[i * 28 + 24],
+  //     image_data[i * 28 + 25],
+  //     image_data[i * 28 + 26],
+  //     image_data[i * 28 + 27]
+  //     );
+  // }
+
   TF_LITE_REPORT_ERROR(error_reporter, "Image decoded and processed");
   return kTfLiteOk;
 }

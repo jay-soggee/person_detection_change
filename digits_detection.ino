@@ -86,6 +86,7 @@ void setup() {
 
 
 int run_model() {
+    
     int result;
 
     if (kTfLiteOk != GetImage(error_reporter, kNumCols, kNumRows, kNumChannels, input->data.int8)) {
