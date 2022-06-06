@@ -57,8 +57,13 @@ void setup() {
       return;
     }
 
-    static tflite::AllOpsResolver micro_op_resolver;
-
+    static tflite::MicroMutableOpResolver<6> micro_op_resolver;
+    micro_op_resolver.AddConv2D();
+    micro_op_resolver.AddDepthwiseConv2D();
+    micro_op_resolver.AddFullyConnected();
+    micro_op_resolver.AddMaxPool2D();
+    micro_op_resolver.AddReshape();
+    micro_op_resolver.AddSoftmax();
 
     static tflite::MicroInterpreter static_interpreter(
         model, 
@@ -80,32 +85,30 @@ void setup() {
 }
 
 
+int run_model() {
+    int result;
+
+    if (kTfLiteOk != GetImage(error_reporter, kNumCols, kNumRows, kNumChannels, input->data.int8)) {
+        TF_LITE_REPORT_ERROR(error_reporter, "Image capture failed.");
+    }
+
+    if (kTfLiteOk != interpreter->Invoke()) {
+        TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed.");
+    }
+    
+    TfLiteTensor* output = interpreter->output(0);
+
+    for (int i; i < 10; i++) 
+        if (output->data.int8[result] < output->data.int8[i])
+            result = i;
+
+    return result;
+}
+
+
 void loop() {
 
-  if (kTfLiteOk != GetImage(error_reporter, kNumCols, kNumRows, kNumChannels,
-                            input->data.int8)) {
-    TF_LITE_REPORT_ERROR(error_reporter, "Image capture failed.");
-  }
+  int predict = run_model();
+  TF_LITE_REPORT_ERROR(error_reporter, "predict as : %d", predict);
 
-
-  if (kTfLiteOk != interpreter->Invoke()) {
-    TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed.");
-  }
-
-  TfLiteTensor* output = interpreter->output(0);
-
-
-    TF_LITE_REPORT_ERROR(error_reporter, "%d : %d, %d, %d, %d, %d, %d, %d, %d, %d, %d",
-        output->dims->size,
-        output->data.uint8[0],
-        output->data.uint8[1],
-        output->data.uint8[2],
-        output->data.uint8[3],
-        output->data.uint8[4],
-        output->data.uint8[5],
-        output->data.uint8[6],
-        output->data.uint8[7],
-        output->data.uint8[8],
-        output->data.uint8[9]
-    );
 }
