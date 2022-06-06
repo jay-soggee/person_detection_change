@@ -164,8 +164,8 @@ TfLiteStatus DecodeAndProcessImage(tflite::ErrorReporter* error_reporter,
 
 
 
-  image_width = 92;
-  image_height = 92;
+  image_width = 100;
+  image_height = 100;
   int8_t my_image[image_width * image_height];
 
 
@@ -257,39 +257,39 @@ TfLiteStatus DecodeAndProcessImage(tflite::ErrorReporter* error_reporter,
     
 
 
-  // for(int i = 0; i < 28; i++) {
-  //   TF_LITE_REPORT_ERROR(error_reporter, 
-  //     "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d ;", 
-  //     image_data[i * 28 + 0],
-  //     image_data[i * 28 + 1],
-  //     image_data[i * 28 + 2],
-  //     image_data[i * 28 + 3],
-  //     image_data[i * 28 + 4],
-  //     image_data[i * 28 + 5],
-  //     image_data[i * 28 + 6],
-  //     image_data[i * 28 + 7],
-  //     image_data[i * 28 + 8],
-  //     image_data[i * 28 + 9],
-  //     image_data[i * 28 + 10],
-  //     image_data[i * 28 + 11],
-  //     image_data[i * 28 + 12],
-  //     image_data[i * 28 + 13],
-  //     image_data[i * 28 + 14],
-  //     image_data[i * 28 + 15],
-  //     image_data[i * 28 + 16],
-  //     image_data[i * 28 + 17],
-  //     image_data[i * 28 + 18],
-  //     image_data[i * 28 + 19],
-  //     image_data[i * 28 + 20],
-  //     image_data[i * 28 + 21],
-  //     image_data[i * 28 + 22],
-  //     image_data[i * 28 + 23],
-  //     image_data[i * 28 + 24],
-  //     image_data[i * 28 + 25],
-  //     image_data[i * 28 + 26],
-  //     image_data[i * 28 + 27]
-  //     );
-  // }
+  for(int i = 0; i < 28; i++) {
+    TF_LITE_REPORT_ERROR(error_reporter, 
+      "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d ;", 
+      image_data[i * 28 + 0],
+      image_data[i * 28 + 1],
+      image_data[i * 28 + 2],
+      image_data[i * 28 + 3],
+      image_data[i * 28 + 4],
+      image_data[i * 28 + 5],
+      image_data[i * 28 + 6],
+      image_data[i * 28 + 7],
+      image_data[i * 28 + 8],
+      image_data[i * 28 + 9],
+      image_data[i * 28 + 10],
+      image_data[i * 28 + 11],
+      image_data[i * 28 + 12],
+      image_data[i * 28 + 13],
+      image_data[i * 28 + 14],
+      image_data[i * 28 + 15],
+      image_data[i * 28 + 16],
+      image_data[i * 28 + 17],
+      image_data[i * 28 + 18],
+      image_data[i * 28 + 19],
+      image_data[i * 28 + 20],
+      image_data[i * 28 + 21],
+      image_data[i * 28 + 22],
+      image_data[i * 28 + 23],
+      image_data[i * 28 + 24],
+      image_data[i * 28 + 25],
+      image_data[i * 28 + 26],
+      image_data[i * 28 + 27]
+      );
+  }
 
   TF_LITE_REPORT_ERROR(error_reporter, "Image decoded and processed");
   return kTfLiteOk;
